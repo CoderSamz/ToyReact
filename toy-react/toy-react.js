@@ -11,14 +11,14 @@ class ElementWrapper {
         
         if (name.match(/^on([\s\S]+)$/)) {
             this.root.addEventListener(RegExp.$1.replace(/^[\s\S]/, c => c.toLowerCase()), value);
-            console.log("111111111111111")
+            
         } else {
             if (name === "className") {
                 this.root.setAttribute("class", value);
-                console.log("2222222222222")
+                
             } else {
                 this.root.setAttribute(name, value);
-                console.log("333333333333")
+                
             }
         }
         
@@ -74,8 +74,15 @@ export class Component {
     }
 
     rerender() {
-        this._range.deleteContents();
+        let oldRange = this._range;
+
+        let range = document.createRange();
+        range.setStart(oldRange.startContainer, oldRange.startOffset);
+        range.setEnd(oldRange.startContainer, oldRange.startOffset);
         this[RENDER_TO_DOM](this._range);
+        
+        oldRange.setStart(range.endContainer, range.endOffset);
+        oldRange.deleteContents();
     }
     setState(newState) {
         if (this.state === null || typeof this.state !== "object") {
